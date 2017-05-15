@@ -549,7 +549,7 @@ define([
         /**
          * Gets the comma-separated list of layer IDs to show.
          * @memberof ArcGisMapServerImageryProvider.prototype
-         * 
+         *
          * @type {String}
          */
         layers : {
@@ -662,7 +662,7 @@ define([
             url = this._proxy.getURL(url);
         }
 
-        return loadJson(url).then(function(json) {
+        return RequestScheduler.request(url, loadJson).then(function(json) {
             var result = [];
 
             var features = json.results;

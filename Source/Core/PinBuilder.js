@@ -5,6 +5,7 @@ define([
         './defined',
         './DeveloperError',
         './loadImage',
+        './RequestScheduler',
         './writeTextToCanvas'
     ], function(
         buildModuleUrl,
@@ -12,6 +13,7 @@ define([
         defined,
         DeveloperError,
         loadImage,
+        RequestScheduler,
         writeTextToCanvas) {
     'use strict';
 
@@ -215,7 +217,7 @@ define([
 
         if (defined(url)) {
             //If we have an image url, load it and then stamp the pin.
-            var promise = loadImage(url).then(function(image) {
+            var promise = RequestScheduler.request(url, loadImage).then(function(image) {
                 drawIcon(context2D, image, size);
                 cache[id] = canvas;
                 return canvas;

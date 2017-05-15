@@ -1,20 +1,22 @@
 /*global define*/
 define([
-    './BingMapsApi',
-    './defaultValue',
-    './defined',
-    './defineProperties',
-    './DeveloperError',
-    './loadJsonp',
-    './Rectangle'
+        './BingMapsApi',
+        './defaultValue',
+        './defined',
+        './defineProperties',
+        './DeveloperError',
+        './loadJsonp',
+        './Rectangle',
+        './RequestScheduler'
 ], function(
-    BingMapsApi,
-    defaultValue,
-    defined,
-    defineProperties,
-    DeveloperError,
-    loadJsonp,
-    Rectangle) {
+        BingMapsApi,
+        defaultValue,
+        defined,
+        defineProperties,
+        DeveloperError,
+        loadJsonp,
+        Rectangle,
+        RequestScheduler) {
     'use strict';
 
     var url = 'https://dev.virtualearth.net/REST/v1/Locations';
@@ -87,13 +89,11 @@ define([
         //>>includeEnd('debug');
 
         var key = this.key;
-        var promise = loadJsonp(url, {
-            parameters : {
-                query : query,
-                key : key
-            },
-            callbackParameterName : 'jsonp'
-        });
+        var parameters = {
+            query : query,
+            key : key
+        };
+        var promise = RequestScheduler.request(url, loadJsonp, parameters);
 
         return promise.then(function(result) {
             if (result.resourceSets.length === 0) {
@@ -109,8 +109,8 @@ define([
                 var north = bbox[2];
                 var east = bbox[3];
                 return {
-                    displayName: resource.name,
-                    destination: Rectangle.fromDegrees(west, south, east, north)
+                    displayName : resource.name,
+                    destination : Rectangle.fromDegrees(west, south, east, north)
                 };
             });
         });
