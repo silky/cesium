@@ -16,7 +16,6 @@ define([
         '../Core/loadImage',
         '../Core/Ray',
         '../Core/Rectangle',
-        '../Core/RequestScheduler',
         '../Renderer/ShaderSource',
         '../Renderer/Texture',
         '../Shaders/GlobeFS',
@@ -46,7 +45,6 @@ define([
         loadImage,
         Ray,
         Rectangle,
-        RequestScheduler,
         ShaderSource,
         Texture,
         GlobeFS,
@@ -476,7 +474,7 @@ define([
 
             if (defined(oceanNormalMapUrl)) {
                 var that = this;
-                when(RequestScheduler.request(oceanNormalMapUrl, loadImage), function(image) {
+                when(loadImage(oceanNormalMapUrl), function(image) {
                     if (oceanNormalMapUrl !== that.oceanNormalMapUrl) {
                         // url changed while we were loading
                         return;

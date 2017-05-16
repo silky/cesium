@@ -7,13 +7,13 @@ define([
         '../Core/IndexDatatype',
         '../Core/OrientedBoundingBox',
         '../Core/Request',
+        '../Core/RequestType',
         '../Core/TileProviderError',
         '../Renderer/Buffer',
         '../Renderer/BufferUsage',
         '../Renderer/VertexArray',
         '../ThirdParty/when',
-        './TerrainState',
-        './TileBoundingRegion'
+        './TerrainState'
     ], function(
         BoundingSphere,
         Cartesian3,
@@ -22,13 +22,13 @@ define([
         IndexDatatype,
         OrientedBoundingBox,
         Request,
+        RequestType,
         TileProviderError,
         Buffer,
         BufferUsage,
         VertexArray,
         when,
-        TerrainState,
-        TileBoundingRegion) {
+        TerrainState) {
     'use strict';
 
     /**
@@ -128,7 +128,9 @@ define([
         function doRequest() {
             // Request the terrain from the terrain provider.
             var request = new Request({
-                distance : distance
+                distance : distance,
+                type : RequestType.TERRAIN,
+                throttle : true
             });
             tileTerrain.data = terrainProvider.requestTileGeometry(x, y, level, request);
 

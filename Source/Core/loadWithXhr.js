@@ -4,7 +4,9 @@ define([
         './defaultValue',
         './defined',
         './DeveloperError',
+        './Request',
         './RequestErrorEvent',
+        './RequestScheduler',
         './RuntimeError',
         './TrustedServers'
     ], function(
@@ -12,7 +14,9 @@ define([
         defaultValue,
         defined,
         DeveloperError,
+        Request,
         RequestErrorEvent,
+        RequestScheduler,
         RuntimeError,
         TrustedServers) {
     'use strict';
@@ -32,6 +36,7 @@ define([
      * @param {String} [options.data] The data to send with the request, if any.
      * @param {Object} [options.headers] HTTP headers to send with the request, if any.
      * @param {String} [options.overrideMimeType] Overrides the MIME type returned by the server.
+     * @param {Request} [options.request] The request object.
      * @returns {Promise.<Object>} a promise that will resolve to the requested data when loaded.
      *
      *
@@ -67,14 +72,20 @@ define([
         var data = options.data;
         var headers = options.headers;
         var overrideMimeType = options.overrideMimeType;
+        var url = options.url;
 
-        return when(options.url, function(url) {
-            var deferred = when.defer();
+        // TODO : right now url as a promise isn't realllly used, but sending it just like this won't work if it is
+        var request = defined(options.request) ? options.request : new Request();
+        request.url = url;
+        request.requestFunction = function() {
+            return when(url, function(url) {
+                var deferred = when.defer();
+                loadWithXhr.load(url, responseType, method, data, headers, deferred, overrideMimeType);
+                return deferred.promise;
+            });
+        };
 
-            loadWithXhr.load(url, responseType, method, data, headers, deferred, overrideMimeType);
-
-            return deferred.promise;
-        });
+        return RequestScheduler.request(request);
     }
 
     var dataUriRegex = /^data:(.*?)(;base64)?,(.*)$/;

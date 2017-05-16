@@ -6,9 +6,6 @@ define([
         '../Core/destroyObject',
         '../Core/DeveloperError',
         '../Core/getMagic',
-        '../Core/Request',
-        '../Core/RequestScheduler',
-        '../Core/RequestType',
         '../ThirdParty/when'
     ], function(
         defaultValue,
@@ -17,9 +14,6 @@ define([
         destroyObject,
         DeveloperError,
         getMagic,
-        Request,
-        RequestScheduler,
-        RequestType,
         when) {
     'use strict';
 

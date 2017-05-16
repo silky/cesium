@@ -18,7 +18,6 @@ define([
         '../Core/loadXML',
         '../Core/Math',
         '../Core/Rectangle',
-        '../Core/RequestScheduler',
         '../Core/WebMercatorTilingScheme',
         '../ThirdParty/when',
         './ImageryProvider'
@@ -41,7 +40,6 @@ define([
         loadXML,
         CesiumMath,
         Rectangle,
-        RequestScheduler,
         WebMercatorTilingScheme,
         when,
         ImageryProvider) {
@@ -663,21 +661,17 @@ define([
 
             ++formatIndex;
 
-            function doXhrRequest(url) {
-                return loadWithXhr({
-                    url: url,
-                    responseType: format.format
-                }).then(handleResponse.bind(undefined, format)).otherwise(doRequest);
-            }
-
             if (format.type === 'json') {
-                return RequestScheduler.request(url, loadJson).then(format.callback).otherwise(doRequest);
+                return loadJson(url).then(format.callback).otherwise(doRequest);
             } else if (format.type === 'xml') {
-                return RequestScheduler.request(url, loadXML).then(format.callback).otherwise(doRequest);
+                return loadXML(url).then(format.callback).otherwise(doRequest);
             } else if (format.type === 'text' || format.type === 'html') {
-                return RequestScheduler.request(url, loadText).then(format.callback).otherwise(doRequest);
+                return loadText(url).then(format.callback).otherwise(doRequest);
             } else {
-                return RequestScheduler.request(url, doXhrRequest);
+                return loadWithXhr({
+                    url : url,
+                    responseType : format.format
+                }).then(handleResponse.bind(undefined, format)).otherwise(doRequest);
             }
         }
 

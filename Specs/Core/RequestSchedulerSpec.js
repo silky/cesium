@@ -274,7 +274,7 @@ defineSuite([
         var requestDeferred = new Request({
             url : 'http://foo.com/1',
             requestFunction : requestFunction,
-            defer : true
+            throttle : true
         });
 
         RequestScheduler.schedule(request);

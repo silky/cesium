@@ -3,14 +3,12 @@ define([
         '../Core/defined',
         '../Core/DeveloperError',
         '../Core/loadImage',
-        '../Core/RequestScheduler',
         '../ThirdParty/when',
         './CubeMap'
     ], function(
         defined,
         DeveloperError,
         loadImage,
-        RequestScheduler,
         when,
         CubeMap) {
     'use strict';
@@ -74,12 +72,12 @@ define([
         // ideally, we would do it in the primitive's update function.
 
         var facePromises = [
-            RequestScheduler.request(urls.positiveX, loadImage, allowCrossOrigin),
-            RequestScheduler.request(urls.negativeX, loadImage, allowCrossOrigin),
-            RequestScheduler.request(urls.positiveY, loadImage, allowCrossOrigin),
-            RequestScheduler.request(urls.negativeY, loadImage, allowCrossOrigin),
-            RequestScheduler.request(urls.positiveZ, loadImage, allowCrossOrigin),
-            RequestScheduler.request(urls.negativeZ, loadImage, allowCrossOrigin)
+            loadImage(urls.positiveX, allowCrossOrigin),
+            loadImage(urls.negativeX, allowCrossOrigin),
+            loadImage(urls.positiveY, allowCrossOrigin),
+            loadImage(urls.negativeY, allowCrossOrigin),
+            loadImage(urls.positiveZ, allowCrossOrigin),
+            loadImage(urls.negativeZ, allowCrossOrigin)
         ];
 
         return when.all(facePromises, function(images) {

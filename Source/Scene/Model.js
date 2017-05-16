@@ -35,8 +35,6 @@ define([
         '../Core/PrimitiveType',
         '../Core/Quaternion',
         '../Core/Queue',
-        '../Core/Request',
-        '../Core/RequestScheduler',
         '../Core/RuntimeError',
         '../Core/Transforms',
         '../Core/WebGLConstants',
@@ -106,8 +104,6 @@ define([
         PrimitiveType,
         Quaternion,
         Queue,
-        Request,
-        RequestScheduler,
         RuntimeError,
         Transforms,
         WebGLConstants,
@@ -1214,7 +1210,7 @@ define([
             setCachedGltf(model, cachedGltf);
             gltfCache[cacheKey] = cachedGltf;
 
-            RequestScheduler.request(url, loadArrayBuffer, options.headers, options.requestType).then(function(arrayBuffer) {
+            loadArrayBuffer(url, options.headers).then(function(arrayBuffer) {
                 var array = new Uint8Array(arrayBuffer);
                 if (containsGltfMagic(array)) {
                     // Load binary glTF
@@ -1426,7 +1422,7 @@ define([
                 else if (buffer.type === 'arraybuffer') {
                     ++model._loadResources.pendingBufferLoads;
                     var bufferPath = joinUrls(model._baseUri, buffer.uri);
-                    var promise = RequestScheduler.request(bufferPath, loadArrayBuffer, undefined, model._requestType);
+                    var promise = loadArrayBuffer(bufferPath);
                     promise.then(bufferLoad(model, id)).otherwise(getFailedLoadFunction(model, 'buffer', bufferPath));
                 }
             }
@@ -1509,7 +1505,7 @@ define([
                 } else {
                     ++model._loadResources.pendingShaderLoads;
                     var shaderPath = joinUrls(model._baseUri, shader.uri);
-                    var promise = RequestScheduler.request(shaderPath, loadText, undefined, model.requestType);
+                    var promise = loadText(shaderPath);
                     promise.then(shaderLoad(model, shader.type, id)).otherwise(getFailedLoadFunction(model, 'shader', shaderPath));
                 }
             }
@@ -1611,11 +1607,11 @@ define([
 
                     var promise;
                     if (ktxRegex.test(imagePath)) {
-                        promise = RequestScheduler.request(imagePath, loadKTX, undefined, model._requestType);
+                        promise = loadKTX(imagePath);
                     } else if (crnRegex.test(imagePath)) {
-                        promise = RequestScheduler.request(imagePath, loadCRN, undefined, model._requestType);
+                        promise = loadCRN(imagePath);
                     } else {
-                        promise = RequestScheduler.request(imagePath, loadImage, undefined, model._requestType);
+                        promise = loadImage(imagePath);
                     }
                     promise.then(imageLoad(model, id)).otherwise(getFailedLoadFunction(model, 'image', imagePath));
                 }

@@ -9,7 +9,6 @@ define([
         '../Core/GeographicTilingScheme',
         '../Core/loadText',
         '../Core/Rectangle',
-        '../Core/RequestScheduler',
         '../Core/RuntimeError',
         '../Core/TileProviderError',
         '../Core/WebMercatorTilingScheme',
@@ -25,7 +24,6 @@ define([
         GeographicTilingScheme,
         loadText,
         Rectangle,
-        RequestScheduler,
         RuntimeError,
         TileProviderError,
         WebMercatorTilingScheme,
@@ -220,7 +218,7 @@ define([
         function requestMetadata() {
             var url = (!defined(that._proxy)) ? metadataUrl : that._proxy.getURL(metadataUrl);
 
-            var metadata = RequestScheduler.request(url, loadText);
+            var metadata = loadText(url);
             when(metadata, metadataSuccess, metadataFailure);
         }
 

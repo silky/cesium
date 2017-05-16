@@ -17,7 +17,6 @@ define([
         '../Core/Matrix2',
         '../Core/Matrix3',
         '../Core/Matrix4',
-        '../Core/RequestScheduler',
         '../Renderer/CubeMap',
         '../Renderer/Texture',
         '../Shaders/Materials/BumpMapMaterial',
@@ -52,7 +51,6 @@ define([
         Matrix2,
         Matrix3,
         Matrix4,
-        RequestScheduler,
         CubeMap,
         Texture,
         BumpMapMaterial,
@@ -774,11 +772,11 @@ define([
                 if (typeof uniformValue === 'string') {
                     var promise;
                     if (ktxRegex.test(uniformValue)) {
-                        promise = RequestScheduler.request(uniformValue, loadKTX);
+                        promise = loadKTX(uniformValue);
                     } else if (crnRegex.test(uniformValue)) {
-                        promise = RequestScheduler.request(uniformValue, loadCRN);
+                        promise = loadCRN(uniformValue);
                     } else {
-                        promise = RequestScheduler.request(uniformValue, loadImage);
+                        promise = loadImage(uniformValue);
                     }
                     when(promise, function(image) {
                         material._loadedImages.push({
@@ -828,12 +826,12 @@ define([
 
             if (path !== material._texturePaths[uniformId]) {
                 var promises = [
-                    RequestScheduler.request(uniformValue.positiveX, loadImage),
-                    RequestScheduler.request(uniformValue.negativeX, loadImage),
-                    RequestScheduler.request(uniformValue.positiveY, loadImage),
-                    RequestScheduler.request(uniformValue.negativeY, loadImage),
-                    RequestScheduler.request(uniformValue.positiveZ, loadImage),
-                    RequestScheduler.request(uniformValue.negativeZ, loadImage)
+                    loadImage(uniformValue.positiveX),
+                    loadImage(uniformValue.negativeX),
+                    loadImage(uniformValue.positiveY),
+                    loadImage(uniformValue.negativeY),
+                    loadImage(uniformValue.positiveZ),
+                    loadImage(uniformValue.negativeZ)
                 ];
 
                 when.all(promises).then(function(images) {

@@ -6,8 +6,7 @@ define([
         './defineProperties',
         './DeveloperError',
         './loadJsonp',
-        './Rectangle',
-        './RequestScheduler'
+        './Rectangle'
 ], function(
         BingMapsApi,
         defaultValue,
@@ -15,8 +14,7 @@ define([
         defineProperties,
         DeveloperError,
         loadJsonp,
-        Rectangle,
-        RequestScheduler) {
+        Rectangle) {
     'use strict';
 
     var url = 'https://dev.virtualearth.net/REST/v1/Locations';
@@ -89,11 +87,13 @@ define([
         //>>includeEnd('debug');
 
         var key = this.key;
-        var parameters = {
-            query : query,
-            key : key
-        };
-        var promise = RequestScheduler.request(url, loadJsonp, parameters);
+        var promise = loadJsonp(url, {
+            parameters : {
+                query : query,
+                key : key
+            },
+            callbackParameterName : 'jsonp'
+        });
 
         return promise.then(function(result) {
             if (result.resourceSets.length === 0) {

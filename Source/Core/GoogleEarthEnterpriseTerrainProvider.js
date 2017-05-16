@@ -1,48 +1,44 @@
 /*global define*/
 define([
-    '../ThirdParty/when',
-    './Credit',
-    './defaultValue',
-    './defined',
-    './defineProperties',
-    './DeveloperError',
-    './Event',
-    './GeographicTilingScheme',
-    './GoogleEarthEnterpriseMetadata',
-    './GoogleEarthEnterpriseTerrainData',
-    './HeightmapTerrainData',
-    './JulianDate',
-    './loadArrayBuffer',
-    './Math',
-    './Rectangle',
-    './Request',
-    './RequestScheduler',
-    './RequestType',
-    './RuntimeError',
-    './TaskProcessor',
-    './TileProviderError'
+        '../ThirdParty/when',
+        './Credit',
+        './defaultValue',
+        './defined',
+        './defineProperties',
+        './DeveloperError',
+        './Event',
+        './GeographicTilingScheme',
+        './GoogleEarthEnterpriseMetadata',
+        './GoogleEarthEnterpriseTerrainData',
+        './HeightmapTerrainData',
+        './JulianDate',
+        './loadArrayBuffer',
+        './Math',
+        './Rectangle',
+        './Request',
+        './RuntimeError',
+        './TaskProcessor',
+        './TileProviderError'
 ], function(
-    when,
-    Credit,
-    defaultValue,
-    defined,
-    defineProperties,
-    DeveloperError,
-    Event,
-    GeographicTilingScheme,
-    GoogleEarthEnterpriseMetadata,
-    GoogleEarthEnterpriseTerrainData,
-    HeightmapTerrainData,
-    JulianDate,
-    loadArrayBuffer,
-    CesiumMath,
-    Rectangle,
-    Request,
-    RequestScheduler,
-    RequestType,
-    RuntimeError,
-    TaskProcessor,
-    TileProviderError) {
+        when,
+        Credit,
+        defaultValue,
+        defined,
+        defineProperties,
+        DeveloperError,
+        Event,
+        GeographicTilingScheme,
+        GoogleEarthEnterpriseMetadata,
+        GoogleEarthEnterpriseTerrainData,
+        HeightmapTerrainData,
+        JulianDate,
+        loadArrayBuffer,
+        CesiumMath,
+        Rectangle,
+        Request,
+        RuntimeError,
+        TaskProcessor,
+        TileProviderError) {
     'use strict';
 
     var TerrainState = {
@@ -430,18 +426,14 @@ define([
         if (defined(terrainPromises[q])) { // Already being loaded possibly from another child, so return existing promise
             promise = terrainPromises[q];
         } else { // Create new request for terrain
-            if (!defined(request) || (request === false)) {
-                // If a request object isn't provided, perform an immediate request
+            if (typeof request === 'boolean') {
                 request = new Request({
-                    defer : true
+                    throttle : request // throttleRequests - deprecated
                 });
             }
 
-            request.url = url;
-            request.requestFunction = loadArrayBuffer;
-            request.type = RequestType.TERRAIN;
+            var requestPromise = loadArrayBuffer(url, undefined, request);
 
-            var requestPromise = RequestScheduler.schedule(request);
             if (!defined(requestPromise)) {
                 return undefined; // Throttled
             }

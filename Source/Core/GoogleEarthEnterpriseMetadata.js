@@ -10,7 +10,6 @@ define([
     './isBitSet',
     './loadArrayBuffer',
     './Request',
-    './RequestScheduler',
     './RequestType',
     './RuntimeError',
     './TaskProcessor'
@@ -25,7 +24,6 @@ define([
     isBitSet,
     loadArrayBuffer,
     Request,
-    RequestScheduler,
     RequestType,
     RuntimeError,
     TaskProcessor) {
@@ -237,16 +235,16 @@ define([
             url = proxy.getURL(url);
         }
 
-        var promise = RequestScheduler.schedule(new Request({
-            defer : !throttle,
-            url : url,
-            requestFunction : loadArrayBuffer,
+        var request = new Request({
+            distance : distance,
             type : RequestType.TERRAIN,
-            distance : distance
-        }));
+            throttle : throttle
+        });
+
+        var promise = loadArrayBuffer(url, undefined, request);
 
         if (!defined(promise)) {
-            return undefined; //Throttled
+            return undefined; // Throttled
         }
 
         var tileInfo = this._tileInfo;
@@ -341,7 +339,7 @@ define([
         if (defined(promise)) {
             return promise
                 .then(function() {
-                    // Recursively call this incase we need multiple subtree requests
+                    // Recursively call this in case we need multiple subtree requests
                     return populateSubtree(that, quadKey, distance, throttle);
                 });
         }

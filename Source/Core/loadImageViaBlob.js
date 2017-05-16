@@ -26,6 +26,7 @@ define([
      * @exports loadImageViaBlob
      *
      * @param {String|Promise.<String>} url The source of the image, or a promise for the URL.
+     * @param {Request} [request] The request object.
      * @returns {Promise.<Image>} a promise that will resolve to the requested data when loaded.
      *
      *
@@ -46,12 +47,12 @@ define([
      * @see {@link http://www.w3.org/TR/cors/|Cross-Origin Resource Sharing}
      * @see {@link http://wiki.commonjs.org/wiki/Promises/A|CommonJS Promises/A}
      */
-    function loadImageViaBlob(url) {
+    function loadImageViaBlob(url, request) {
         if (!xhrBlobSupported || isDataUri(url)) {
-            return loadImage(url);
+            return loadImage(url, undefined, request);
         }
 
-        return loadBlob(url).then(function(blob) {
+        return loadBlob(url, undefined, request).then(function(blob) {
             var blobUrl = window.URL.createObjectURL(blob);
 
             return loadImage(blobUrl, false).then(function(image) {

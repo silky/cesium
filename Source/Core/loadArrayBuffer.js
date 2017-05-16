@@ -15,6 +15,7 @@ define([
      *
      * @param {String|Promise.<String>} url The URL of the binary data, or a promise for the URL.
      * @param {Object} [headers] HTTP headers to send with the requests.
+     * @param {Request} [request] The request object.
      * @returns {Promise.<ArrayBuffer>} a promise that will resolve to the requested data when loaded.
      *
      *
@@ -25,15 +26,16 @@ define([
      * }).otherwise(function(error) {
      *     // an error occurred
      * });
-     * 
+     *
      * @see {@link http://www.w3.org/TR/cors/|Cross-Origin Resource Sharing}
      * @see {@link http://wiki.commonjs.org/wiki/Promises/A|CommonJS Promises/A}
      */
-    function loadArrayBuffer(url, headers) {
+    function loadArrayBuffer(url, headers, request) {
         return loadWithXhr({
             url : url,
             responseType : 'arraybuffer',
-            headers : headers
+            headers : headers,
+            request : request
         });
     }
 

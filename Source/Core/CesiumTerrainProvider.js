@@ -20,7 +20,6 @@ define([
         './OrientedBoundingBox',
         './QuantizedMeshTerrainData',
         './Request',
-        './RequestScheduler',
         './RequestType',
         './TerrainProvider',
         './TileAvailability',
@@ -46,7 +45,6 @@ define([
         OrientedBoundingBox,
         QuantizedMeshTerrainData,
         Request,
-        RequestScheduler,
         RequestType,
         TerrainProvider,
         TileAvailability,
@@ -54,7 +52,7 @@ define([
     'use strict';
 
     /**
-     * A {@link TerrainProvider} that access terrain data in a Cesium terrain format.
+     * A {@link TerrainProvider} that accesses terrain data in a Cesium terrain format.
      * The format is described on the
      * {@link https://github.com/AnalyticalGraphicsInc/cesium/wiki/Cesium-Terrain-Server|Cesium wiki}.
      *
@@ -265,7 +263,7 @@ define([
         }
 
         function requestMetadata() {
-            var metadata = RequestScheduler.request(metadataUrl, loadJson);
+            var metadata = loadJson(metadataUrl);
             when(metadata, metadataSuccess, metadataFailure);
         }
 
@@ -533,22 +531,14 @@ define([
             extensionList.push('watermask');
         }
 
-        function tileLoader(tileUrl) {
-            return loadArrayBuffer(tileUrl, getRequestHeader(extensionList));
-        }
-
-        if (!defined(request) || (request === false)) {
-            // If a request object isn't provided, perform an immediate request
+        if (typeof request === 'boolean') {
             request = new Request({
-                defer : true
+                throttle : request // throttleRequests - deprecated
             });
         }
 
-        request.url = url;
-        request.requestFunction = tileLoader;
-        request.type = RequestType.TERRAIN;
+        var promise = loadArrayBuffer(url, getRequestHeader(extensionList), request);
 
-        var promise = RequestScheduler.schedule(request);
         if (!defined(promise)) {
             return undefined;
         }

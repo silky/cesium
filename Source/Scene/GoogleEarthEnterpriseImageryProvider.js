@@ -14,7 +14,6 @@ define([
     '../Core/Math',
     '../Core/Rectangle',
     '../Core/Request',
-    '../Core/RequestScheduler',
     '../Core/RequestType',
     '../Core/RuntimeError',
     '../Core/TileProviderError',
@@ -35,7 +34,6 @@ define([
     CesiumMath,
     Rectangle,
     Request,
-    RequestScheduler,
     RequestType,
     RuntimeError,
     TileProviderError,
@@ -449,12 +447,12 @@ define([
         }
         // Load the
         var url = buildImageUrl(this, info, x, y, level);
-        var promise = RequestScheduler.schedule(new Request({
-            url : url,
-            requestFunction : loadArrayBuffer,
+        var request = new Request({
+            distance : distance,
             type : RequestType.IMAGERY,
-            distance : distance
-        }));
+            throttle : true
+        });
+        var promise = loadArrayBuffer(url, undefined, request);
         if (!defined(promise)) {
             return undefined; //Throttled
         }

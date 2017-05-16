@@ -24,9 +24,6 @@ define([
         '../Core/ManagedArray',
         '../Core/Math',
         '../Core/Matrix4',
-        '../Core/Request',
-        '../Core/RequestScheduler',
-        '../Core/RequestType',
         '../Renderer/ClearCommand',
         '../Renderer/Pass',
         '../ThirdParty/Uri',
@@ -75,9 +72,6 @@ define([
         ManagedArray,
         CesiumMath,
         Matrix4,
-        Request,
-        RequestScheduler,
-        RequestType,
         ClearCommand,
         Pass,
         Uri,
@@ -573,8 +567,7 @@ define([
 
         var that = this;
 
-        // We don't know the distance of the tileset until tileset.json is loaded, so use the default distance for now
-        RequestScheduler.request(tilesetUrl, loadJson, undefined, RequestType.TILES3D).then(function(tilesetJson) {
+        loadJson(tilesetUrl).then(function(tilesetJson) {
             if (that.isDestroyed()) {
                 return when.reject('tileset is destroyed');
             }
@@ -1039,23 +1032,6 @@ define([
 
             if (this._cullWithChildrenBounds) {
                 Cesium3DTileOptimizations.checkChildrenWithinParent(tile3D);
-            }
-
-            // Create a load heap, one for each unique server. We can only make limited requests to a given
-            // server so it is unnecessary to keep a queue of all tiles needed to be loaded.
-            // Instead of creating a list of all tiles to load and then sorting it entirely to find the best ones,
-            // we keep just a heap so we have the best `maximumRequestsPerServer` to load. The order of these does
-            // not matter much as we will try to load them all.
-            // The heap approach is a O(n log k) to find the best tiles for loading.
-            var requestServer = tile3D.requestServer;
-            if (defined(requestServer)) {
-                if (!defined(this._requestHeaps[requestServer])) {
-                    var heap = new Heap(sortForLoad);
-                    this._requestHeaps[requestServer] = heap;
-                    heap.maximumSize = RequestScheduler.maximumRequestsPerServer;
-                    heap.reserve(heap.maximumSize);
-                }
-                tile3D._requestHeap = this._requestHeaps[requestServer];
             }
         }
 

@@ -8,7 +8,6 @@ define([
         '../Core/loadImageViaBlob',
         '../Core/loadKTX',
         '../Core/Request',
-        '../Core/RequestScheduler',
         '../Core/RequestType'
     ], function(
         defined,
@@ -19,7 +18,6 @@ define([
         loadImageViaBlob,
         loadKTX,
         Request,
-        RequestScheduler,
         RequestType) {
     'use strict';
 
@@ -320,23 +318,21 @@ define([
      *          Image or a Canvas DOM object.
      */
     ImageryProvider.loadImage = function(imageryProvider, url, distance) {
-        var requestFunction;
+        var request = new Request({
+            distance : distance,
+            type : RequestType.IMAGERY,
+            throttle : true
+        });
+
         if (ktxRegex.test(url)) {
-            requestFunction = loadKTX;
+            return loadKTX(url, undefined, request);
         } else if (crnRegex.test(url)) {
-            requestFunction = loadCRN;
+            return loadCRN(url, undefined, request);
         } else if (defined(imageryProvider.tileDiscardPolicy)) {
-            requestFunction = loadImageViaBlob;
-        } else {
-            requestFunction = loadImage;
+            return loadImageViaBlob(url, request);
         }
 
-        return RequestScheduler.schedule(new Request({
-            url : url,
-            requestFunction : requestFunction,
-            type : RequestType.IMAGERY,
-            distance : distance
-        }));
+        return loadImage(url, undefined, request);
     };
 
     return ImageryProvider;

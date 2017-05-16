@@ -2593,7 +2593,6 @@ define([
 
         scene._preRender.raiseEvent(scene, time);
         scene._jobScheduler.resetBudgets();
-        RequestScheduler.resetBudgets();
 
         var context = scene.context;
         var us = context.uniformState;
@@ -2660,6 +2659,7 @@ define([
         }
 
         context.endFrame();
+        RequestScheduler.update();
         callAfterRenderFunctions(frameState);
 
         scene._postRender.raiseEvent(scene, time);

@@ -30,6 +30,7 @@ define([
      * @param {Object} [headers] HTTP headers to send with the request.
      * 'Accept: application/json,&#42;&#47;&#42;;q=0.01' is added to the request headers automatically
      * if not specified.
+     * @param {Request} [request] The request object.
      * @returns {Promise.<Object>} a promise that will resolve to the requested data when loaded.
      *
      *
@@ -39,12 +40,12 @@ define([
      * }).otherwise(function(error) {
      *     // an error occurred
      * });
-     * 
+     *
      * @see loadText
      * @see {@link http://www.w3.org/TR/cors/|Cross-Origin Resource Sharing}
      * @see {@link http://wiki.commonjs.org/wiki/Promises/A|CommonJS Promises/A}
      */
-    function loadJson(url, headers) {
+    function loadJson(url, headers, request) {
         //>>includeStart('debug', pragmas.debug);
         if (!defined(url)) {
             throw new DeveloperError('url is required.');
@@ -59,7 +60,7 @@ define([
             headers.Accept = defaultHeaders.Accept;
         }
 
-        return loadText(url, headers).then(function(value) {
+        return loadText(url, headers, request).then(function(value) {
             return JSON.parse(value);
         });
     }

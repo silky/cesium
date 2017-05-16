@@ -18,7 +18,6 @@ define([
         '../Core/Math',
         '../Core/OrientedBoundingBox',
         '../Core/Rectangle',
-        '../Core/RequestScheduler',
         '../Renderer/DrawCommand',
         '../Renderer/Pass',
         '../Renderer/RenderState',
@@ -53,7 +52,6 @@ define([
         CesiumMath,
         OrientedBoundingBox,
         Rectangle,
-        RequestScheduler,
         DrawCommand,
         Pass,
         RenderState,
@@ -1008,7 +1006,7 @@ define([
             return initPromise;
         }
 
-        GroundPrimitive._initPromise = RequestScheduler.request(buildModuleUrl('Assets/approximateTerrainHeights.json'), loadJson).then(function(json) {
+        GroundPrimitive._initPromise = loadJson(buildModuleUrl('Assets/approximateTerrainHeights.json')).then(function(json) {
             GroundPrimitive._initialized = true;
             GroundPrimitive._terrainHeights = json;
         });

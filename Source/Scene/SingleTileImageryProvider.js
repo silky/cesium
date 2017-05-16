@@ -9,7 +9,6 @@ define([
         '../Core/GeographicTilingScheme',
         '../Core/loadImage',
         '../Core/Rectangle',
-        '../Core/RequestScheduler',
         '../Core/RuntimeError',
         '../Core/TileProviderError',
         '../ThirdParty/when'
@@ -23,7 +22,6 @@ define([
         GeographicTilingScheme,
         loadImage,
         Rectangle,
-        RequestScheduler,
         RuntimeError,
         TileProviderError,
         when) {
@@ -123,7 +121,7 @@ define([
         }
 
         function doRequest() {
-            when(RequestScheduler.request(imageUrl, loadImage), success, failure);
+            when(loadImage(imageUrl), success, failure);
         }
 
         doRequest();

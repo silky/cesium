@@ -7,7 +7,6 @@ define([
         '../Core/DeveloperError',
         '../Core/isArray',
         '../Core/loadJson',
-        '../Core/RequestScheduler',
         '../ThirdParty/when',
         './ConditionsExpression',
         './Expression'
@@ -19,7 +18,6 @@ define([
         DeveloperError,
         isArray,
         loadJson,
-        RequestScheduler,
         when,
         ConditionsExpression,
         Expression) {
@@ -73,7 +71,7 @@ define([
 
         var style = this;
         if (typeof data === 'string') {
-            RequestScheduler.request(data, loadJson).then(function(styleJson) {
+            loadJson(data).then(function(styleJson) {
                 setup(style, styleJson);
                 style._readyPromise.resolve(style);
             }).otherwise(function(error) {

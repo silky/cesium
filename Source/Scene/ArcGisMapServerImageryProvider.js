@@ -14,7 +14,6 @@ define([
         '../Core/loadJsonp',
         '../Core/Math',
         '../Core/Rectangle',
-        '../Core/RequestScheduler',
         '../Core/RuntimeError',
         '../Core/TileProviderError',
         '../Core/WebMercatorProjection',
@@ -38,7 +37,6 @@ define([
         loadJsonp,
         CesiumMath,
         Rectangle,
-        RequestScheduler,
         RuntimeError,
         TileProviderError,
         WebMercatorProjection,
@@ -231,7 +229,7 @@ define([
                 parameters.token = that._token;
             }
 
-            var metadata = RequestScheduler.request(that._url, loadJsonp, {
+            var metadata = loadJsonp(that._url, {
                 parameters : parameters,
                 proxy : that._proxy
             });
@@ -662,7 +660,7 @@ define([
             url = this._proxy.getURL(url);
         }
 
-        return RequestScheduler.request(url, loadJson).then(function(json) {
+        return loadJson(url).then(function(json) {
             var result = [];
 
             var features = json.results;
