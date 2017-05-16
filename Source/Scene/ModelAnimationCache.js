@@ -3,6 +3,7 @@ define([
         '../Core/Cartesian3',
         '../Core/defaultValue',
         '../Core/defined',
+        '../Core/isDataUri',
         '../Core/LinearSpline',
         '../Core/Matrix4',
         '../Core/Quaternion',
@@ -13,6 +14,7 @@ define([
         Cartesian3,
         defaultValue,
         defined,
+        isDataUri,
         LinearSpline,
         Matrix4,
         Quaternion,
@@ -27,8 +29,6 @@ define([
     function ModelAnimationCache() {
     }
 
-    var dataUriRegex = /^data\:/i;
-
     function getAccessorKey(model, accessor) {
         var gltf = model.gltf;
         var buffers = gltf.buffers;
@@ -40,7 +40,7 @@ define([
         var byteOffset = bufferView.byteOffset + accessor.byteOffset;
         var byteLength = accessor.count * getBinaryAccessor(accessor).componentsPerAttribute;
 
-        var uriKey = dataUriRegex.test(buffer.uri) ? '' : buffer.uri;
+        var uriKey = isDataUri(buffer.uri) ? '' : buffer.uri;
         return model.cacheKey + '//' + uriKey + '/' + byteOffset + '/' + byteLength;
     }
 

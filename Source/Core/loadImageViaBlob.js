@@ -1,15 +1,15 @@
 /*global define*/
 define([
         '../ThirdParty/when',
+        './isDataUri',
         './loadBlob',
         './loadImage'
     ], function(
         when,
+        isDataUri,
         loadBlob,
         loadImage) {
     'use strict';
-
-    var dataUriRegex = /^data:/;
 
     /**
      * Asynchronously loads the given image URL by first downloading it as a blob using
@@ -42,12 +42,12 @@ define([
      * when.all([loadImageViaBlob('image1.png'), loadImageViaBlob('image2.png')]).then(function(images) {
      *     // images is an array containing all the loaded images
      * });
-     * 
+     *
      * @see {@link http://www.w3.org/TR/cors/|Cross-Origin Resource Sharing}
      * @see {@link http://wiki.commonjs.org/wiki/Promises/A|CommonJS Promises/A}
      */
     function loadImageViaBlob(url) {
-        if (dataUriRegex.test(url)) {
+        if (!xhrBlobSupported || isDataUri(url)) {
             return loadImage(url);
         }
 
@@ -76,5 +76,5 @@ define([
         }
     })();
 
-    return xhrBlobSupported ? loadImageViaBlob : loadImage;
+    return loadImageViaBlob;
 });
